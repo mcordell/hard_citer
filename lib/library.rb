@@ -1,5 +1,5 @@
 
-class Library
+class Library < Hash
 
   def initialize(path=nil)
     if path

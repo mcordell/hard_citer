@@ -2,6 +2,18 @@ require 'library'
 class Citer
   @@library=nil
 
+
+  def parse_sentence(sentence)
+    regexp=/\{(\w*:\w*)\}/
+    y=sentence.enum_for(:scan, regexp).map do
+      match=Regexp.last_match
+      pos=match.begin(0)
+      [match.to_s,pos]
+    end
+  end
+  
+
+
   def find_citations (text)
     if text.is_a?(String)
       text=text
@@ -73,4 +85,9 @@ class Citer
       lines=f.readlines
       return lines
     end
+end
+
+if __FILE__ == $0
+  x = Citer.new
+  x.parse_sentence "Hey man this is a sentence with a citation at the end {Wasmuth:2000vj}{Sellmeyer:2001tn}."
 end
