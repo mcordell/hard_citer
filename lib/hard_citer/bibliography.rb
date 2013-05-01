@@ -1,3 +1,0 @@
-class Bibliography
-
-end
