@@ -1,29 +1,5 @@
-# HardCiter
+# HardCiter 
+Hard Citer is seeks to replicate the functionality of Papers' "magic citations" in HTML. Papers does not provide an easy way to perform magic citations and produce a nicely bibliography for HTML, in HTML.  
 
-TODO: Write a gem description
 
-## Installation
 
-Add this line to your application's Gemfile:
-
-    gem 'hard_citer'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install hard_citer
-
-## Usage
-
-TODO: Write usage instructions here
-
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
