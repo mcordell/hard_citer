@@ -1,7 +1,8 @@
-
+require 'bibtex'
 class Library < Hash
 
   def initialize(path=nil)
+
     if path
       load_lib(path)
     end

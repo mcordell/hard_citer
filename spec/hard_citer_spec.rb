@@ -24,9 +24,10 @@ describe Citer do
       it "should return the location pair" do
         parse_result=hard_citer.parse_sentence "This sentence has two citations at the end{Biswal:2010fj}{Davis:2003wp}." 
         parse_result.should == [["{Biswal:2010fj}", 42], ["{Davis:2003wp}", 57]]
-      
       end
-      
     end
+    
   end
+
+
 end
