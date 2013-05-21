@@ -37,6 +37,9 @@ class Styler
       elsif cite_match[0].is_a? Array
         output = multi_cite(cite_match, line, pos_off_set)
       end
+      if output.nil?
+        puts "wait"
+      end
       processed_line += output
     end
     processed_line += line
