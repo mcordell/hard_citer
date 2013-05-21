@@ -1,55 +1,70 @@
 # encoding: utf-8
 require 'stringio'
 require 'bibtex'
+require 'citeproc'
 require_relative 'cite_match'
 require_relative 'styler'
-require 'citeproc'
 
-class Citer
+class HardCiter
   attr_accessor :library, :styler
 
-  def cite_text(in_text)
-    @bibliography = {}
-    bib_location = nil
-    out_array = []
-    in_text = in_text.join("\n") if in_text.is_a?(Array)
-    in_text = StringIO.open(in_text) if in_text.is_a?(String)
-    text_line_count = 0
-
-    in_text.each_with_index() do |line, index|
-      regex_matches = self.parse_line(line)
-      bib_line_match = self.check_for_bib_key(line)
-      bib_location = [text_line_count, bib_line_match] if bib_line_match
-      cite_matches = regex_matches.each do |match|
-        add_match_to_bib(match, @bibliography)
-      end
-
-      if cite_matches.length >  1
-        cite_matches = self.group_matches(cite_matches, line)
-        new_line = styler.style_line(line, cite_matches)
-      elsif cite_matches.empty?
-        new_line = line
-      else
-        new_line = styler.style_line(line, cite_matches)
-      end
-      out_array.push(new_line)
-      text_line_count += 1
-    end
-
-    if bib_location
-       bib_arr = styler.get_bibliography_lines(@bibliography, @csl)
-       out_array = integrate(bib_arr, out_array, bib_location)
+  def clean_line_matches(citation_matches,line)
+    if citation_matches.length >  1
+      return group_matches(citation_matches, line)
     else
-      warn('No bib key found. \
-           Bibliography not added to cited text. \
-           In text - citation took place')
+      return citation_matches
     end
-    out_array
   end
 
-  def integrate(bib_array, in_array, bib_location)
-     second_half = in_array[bib_location[0] + 1..in_array.size - 1]
-     in_array[0..bib_location[0] - 1] + bib_array + second_half
+  def regex_matches_to_cite_matches(regex_matches)
+    cite_matches = regex_matches.map { |m|
+      add_match_to_bib(m,@bibliography)
+    }
+    return cite_matches
+  end
+
+  def find_all_citations(text)
+    bib_location = nil
+    all_citations = {}
+    text.each_with_index() do |line, index|
+      regex_matches = parse_line(line)
+      bib_location = index if is_bib_key?(line)
+      matches=regex_matches_to_cite_matches(regex_matches) unless regex_matches.empty?
+      all_citations[index] = clean_line_matches(matches,line) unless matches.nil?
+    end
+    return bib_location,all_citations
+  end
+
+  def text_to_array(text)
+    text = text.readlines() if text.is_a?(File)
+    text = StringIO.open(text).readlines() if text.is_a?(String)
+    return text
+  end
+
+  def integrate_citations_into_text!(text,all_citations)
+    all_citations.each do |line_number,cite_matches|
+      text_line = text[line_number]
+      text[line_number] = @styler.style_line(text_line,cite_matches)
+    end
+  end
+
+  def integrate_bibliography_into_text(text,bib_location)
+    if bib_location
+      bib_text = styler.get_bibliography_lines(@bibliography, @csl)
+      after_bib_location = text[(bib_location + 1)..text.size - 1]
+      return text[0..bib_location - 1] + bib_text + after_bib_location
+    else
+      warn('No bib key found. \
+           Bibliography not added to cited text.')
+      return text
+    end
+  end
+
+  def cite_text(text)
+    text = text_to_array(text)
+    bib_location,all_citations= find_all_citations(text)
+    integrate_citations_into_text!(text,all_citations)
+    return integrate_bibliography_into_text(text,bib_location)
   end
 
   def add_match_to_bib(match, bibliography)
@@ -65,7 +80,7 @@ class Citer
     [cite_match, match_pos]
   end
 
-  def check_for_bib_key(line)
+  def is_bib_key?(line)
     line =~ @bib_key
   end
 
@@ -77,45 +92,48 @@ class Citer
     match.gsub(/\{|\}/, '')
   end
 
-  def group_matches(matches, line)
-    out_array = []
-    match_index = 0
-    while match_index < matches.length
-      next_index = match_index + 1
-      if next_index < matches.length
-        is_paired = test_for_paired_matches(matches[match_index],
-                                            matches[next_index], line)
-        if is_paired
-          paired_array = [matches[match_index], matches[next_index]]
-          match_index += 1
-          next_index += 1
-          while is_paired && next_index < matches.length
-            is_paired = test_for_paired_matches(matches[match_index],
-                                                matches[next_index], line)
-            if is_paired
-              paired_array.push(matches[next_index])
-              match_index += 1
-              next_index += 1
-            end
-          end
-          out_array.push(paired_array)
-        else
-          out_array.push(matches[match_index])
-        end
+  def group_matches(matches,line)
+    matches_grouped = []
+    current_match = matches.shift
+    until matches.empty?
+      next_match = matches.shift
+      if matches_are_paired?(current_match,next_match,line)
+        current_match = pair_two_matches(current_match, next_match)
       else
-        out_array.push(matches[match_index])
+        matches_grouped.push(current_match) if current_match
+        current_match = next_match
       end
-      match_index += 1
     end
-    return out_array
+    matches_grouped.push(current_match) unless current_match.empty?
+    return matches_grouped
   end
 
-  def test_for_paired_matches(match_first, match_second, line)
-    match_text, match_pos = match_first
+  def pair_two_matches(current_match,next_match)
+    if current_match[0].instance_of?(Array)
+      paired_matches = current_match + next_match
+    else
+      paired_matches = [current_match,next_match]
+    end
+  end
+
+
+  def get_match_text_and_pos(match_group)
+    if match_group[0].instance_of?(Array)
+      #match_group has sub arrays so it needs to be unpacked
+      last_match = match_group[match_group.size-1]
+    else
+      last_match = match_group
+    end
+    return last_match[0],last_match[1]
+  end
+
+
+  def matches_are_paired?(match_first, match_second, line)
+    match_text, match_pos = get_match_text_and_pos(match_first)
     next_match_pos = match_second[1]
     end_of_match = match_pos + match_text.key.length
     while end_of_match < next_match_pos
-      if line[end_of_match] == 's'
+      if line[end_of_match] =~ /\s/
         end_of_match += 1
       else
         return false
@@ -137,6 +155,8 @@ class Citer
     @library = Library.new(path) if path
     @bib_key = /\{papers2_bibliography\}/
     @csl = CSL::Style.new('../examples/plos.csl')
+    @bibliography = {}
+    @styler = Styler.new
   end
 
   def attach_bibtex_library(library_path)
