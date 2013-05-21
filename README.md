@@ -12,7 +12,7 @@ Attach a bibtex library by providing the path to the .bib file
 
 Provide the file/string/array with magic citations to the cite_text function
     file_obj=open("webpage_source.html","r")
-    cited_array=x.cite_text(file_obj)
+    cited_array=citer.cite_text(file_obj)
 
 The cited_array can then be looped through to output a nicely formatted webpage
 with bibliography
