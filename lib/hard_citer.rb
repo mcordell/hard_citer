@@ -151,10 +151,13 @@ class HardCiter
     end
   end
 
+  def set_style(csl)
+    @csl = csl
+  end
+
   def initialize(path = nil)
     @library = Library.new(path) if path
     @bib_key = /\{papers2_bibliography\}/
-    @csl = CSL::Style.new('../examples/plos.csl')
     @bibliography = {}
     @styler = Styler.new
   end

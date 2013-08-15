@@ -3,7 +3,7 @@ require 'citeproc'
 class Styler
 
   def get_bibliography_lines(bibliography_array, csl_style)
-    out_lines = ['<ol>']
+    out_lines = ['<ol class="bibliography">']
     bibliography_array.each do |cite_key, cite_match|
       entry = cite_match.citation
       if entry.nil?
