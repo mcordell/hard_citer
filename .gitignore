@@ -3,11 +3,13 @@
 .bundle
 .config
 .yardoc
+.DS_STORE
 Gemfile.lock
 InstalledFiles
 _yardoc
 coverage
 doc/
+.idea/
 lib/bundler/man
 pkg
 rdoc
@@ -15,3 +17,4 @@ spec/reports
 test/tmp
 test/version_tmp
 tmp
+lib/scrap_methods
