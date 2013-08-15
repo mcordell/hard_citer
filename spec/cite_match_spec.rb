@@ -1,10 +1,12 @@
-require "rspec"
+require "spec_helper"
+require "lib/cite_match"
 
 describe "Cite Match" do
 
-  it "should do something" do
-
-    #To change this template use File | Settings | File Templates.
-    true.should == false
+  describe "minimum of a key to make citation" do
+      it "should create a Cite Match object with accessible key" do
+        cite_match=CiteMatch.new("{LibraryWebsite:tt}")
+        cite_match.key.should == "{LibraryWebsite:tt}"
+      end
   end
 end
