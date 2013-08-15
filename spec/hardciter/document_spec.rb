@@ -43,7 +43,6 @@ describe HardCiter::Document do
           end
         end
       end
-
       after do
         File.delete(filename)
       end
