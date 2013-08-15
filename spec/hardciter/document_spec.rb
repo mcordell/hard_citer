@@ -34,13 +34,18 @@ describe HardCiter::Document do
     end
 
     context "text is a file object" do
+      let(:filename) { "filename" }
       let(:lines_array) { ["String1", "String2"] }
       let(:file_object) do
-        File.open "filename", "w" do |file|
+        File.open filename, "w" do |file|
           lines_array.each do |line|
             file.write(line)
           end
         end
+      end
+
+      after do
+        File.delete(filename)
       end
 
       before { doc.text_array = file_object }
