@@ -3,6 +3,8 @@ module HardCiter
     attr_accessor :csl 
 
     CSL = File.expand_path("../../../examples/plos.csl", __FILE__)
+      
+    BIBLIOGRAPHY_INTEXT_KEY = /\{papers2_bibliography\}/
 
     def initialize
       self.reset
@@ -10,6 +12,7 @@ module HardCiter
 
     def reset
       @csl = CSL
+      @bibliography_intext_key = BIBLIOGRAPHY_INTEXT_KEY
     end
 
   end
