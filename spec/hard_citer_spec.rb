@@ -1,3 +1,7 @@
+##This file is like a giant integration test that is left over from before
+#HardCiter was a proper module
+#TODO: Needs to be refactored to either use the module or broken up into smaller
+#tests
 require 'spec_helper'
 require_relative '../lib/hard_citer'
 require_relative '../lib/cite_match'
