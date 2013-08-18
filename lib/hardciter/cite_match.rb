@@ -9,9 +9,6 @@ module HardCiter
       @in_cite_text = in_cite_text
     end
 
-    def key
-      
-    end
   end
 end
 

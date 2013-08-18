@@ -4,11 +4,14 @@ module HardCiter
   class Library < Hash
 
     def initialize(path = nil)
-      load_lib(path) if path
+      load_lib(path)     
     end
 
-    def load_lib(path)
-      File.open(path, 'r')
+
+    def load_lib(path = nil)
+      if File.exists? path
+        load_from_file(path)     
+      end
     end
 
     def get_citation()
@@ -16,11 +19,19 @@ module HardCiter
   end
 
 
-  class BibtexLibrary < Library
+  class BibTexLibrary
     attr_accessor :bibtex
+
+    def initialize(path)
+      load_from_file(path)
+    end
 
     def load_from_file(path)
       @bibtex = BibTeX.open(path)
+    end
+
+    def get_citation(key)
+      @bibtex[key]
     end
 
     def method_missing(method, *args, &block)

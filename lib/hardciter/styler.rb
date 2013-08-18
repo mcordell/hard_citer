@@ -12,7 +12,7 @@ module HardCiter
 
     def get_bibliography_lines(bibliography_array, csl_style)
       out_lines = ['<ol class="bibliography">']
-      bibliography_array.each do |cite_key, cite_match|
+      bibliography_array.citations.each do |cite_key, cite_match|
         entry = cite_match.citation
         if entry.nil?
           cite_text = cite_key
