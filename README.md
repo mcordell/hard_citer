@@ -46,3 +46,17 @@ citer.csl = File.expand_path("../examples/plos.csl")
 ```
 
 
+##TODO
+Here is a general list of how I would like to improve this gem
+
+1. Command line commands in conjunction with a yml configuration file
+2. Better support for alternate CWYW tools
+3. More Tests 
+4. Expand the Library function so that you can use ActiveRecords or kin for easier rails support
+
+
+##Contact
+
+I would love to hear from anyone who would like me to improve this gem or who has comments and suggestions. 
+
+\[[Twitter](https://twitter.com/mike_cordell)\] | \[[Email](mailto:mike@mikecordell.com)\] | \[[Website](http://www.mikecordell.com)\] 
