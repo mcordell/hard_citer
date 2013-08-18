@@ -7,4 +7,5 @@ gem 'citeproc-ruby'
 
 group :development,:test do
 	gem 'rspec'
+  gem 'factory_girl'
 end
