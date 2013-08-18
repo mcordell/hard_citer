@@ -2,9 +2,9 @@ module HardCiter
   class Bibliography
     attr_accessor :bibliography_intext, :intext_regex, :bib_out_location, :citation_locations, :citations
 
-    def initialization
-      @bibliography_intext = HardCiter::Configuration.bibliography_intext
-      @intext_regex = HardCiter::Configuration.intext_regex
+    def initialize
+      @bibliography_intext = HardCiter::Configuration::BIBLIOGRAPHY_INTEXT_KEY
+      @intext_regex = HardCiter::Configuration::INTEXT_REGEX
       @citation_locations = {}
       @citations = {}
     end
@@ -25,7 +25,7 @@ module HardCiter
       if citation_matches.length >  1
         @citation_locations[index] = group_matches(citation_matches, line)
       else
-        @citation_location[index] = citation_matches
+        @citation_locations[index] = citation_matches
       end
     end
 
