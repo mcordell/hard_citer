@@ -1,7 +1,6 @@
 # Hard Citer 
-Hard Citer seeks to replicate the functionality of Papers' [magic citations][1] in
-HTML. Papers does not provide an easy way to perform magic citations and 
-produce a nicely formatted bibliography for HTML, from an HTML document source.
+Hard Citer is a solution for outputting HTML bibliographies. When used in conjuction with a "cite while you write" tool, it can make writing and editing well-cited html eaiser. The default configuration is geared towards usage with Papers' [magic citations][1]. Papers does not provide an easy way to perform magic citations and produce a nicely formatted bibliography for HTML, from an HTML document source.
+
 For the best bang for your buck, use one of the text editors listed [here][2] 
 under the heading "Insertation of citekey" so that you can easily cite while you
 write. As an added benefit, papers will automatically group your citations in the 
@@ -12,32 +11,31 @@ use Hard Citer.
 [2]: http://support.mekentosj.com/kb/read-write-cite/applications-supported-by-magic-citations 
 
 ##Usage
-Create a new HardCiter object
+
+Require the module where you plan on using HardCiter. Initialize a new Citer object by pointing it at the bib file you exported from Papers:
 
 ```Ruby
-citer = HardCiter.new
+require File.expand_path("../lib/hard_citer", __FILE__)
+citer = HardCiter::Citer.new('./examples/example_bib.bib')
 ```
 
-Attach a bibtex library by providing the path to the .bib file
+Open the HTML file that contains the intext citations that match the bib file.
 
- ```Ruby
-citer.attach_bibtex_library("nu.bib")
- ```
+```Ruby
+input_html = File.open('./examples/example_input.html','r')
+```
 
-Provide the file/string/array with magic citations to the cite_text function
+Now, simply provide the input_html to the cite_text function and it will return the well-cited output text.
 
- ```Ruby
-file_obj = open("webpage_source.html", "r")
-cited_array = citer.cite_text(file_obj)
- ```
+```Ruby
+html_output = citer.cite_text()
+```
 
-The cited_array can then be looped through to output a nicely formatted webpage
-with bibliography
 
- ```Ruby
-out_path = "webpage_out.html"
-File.open(out_path, 'w') { |f| cited_array.each { |line| f.write(line) } }
- ```
+You can change the output format of the citations by changing the CSL of the citer object before calling cite_text. Simply provide the path to the csl file that you would like to use.
 
+```Ruby
+citer.csl = File.expand_path("../examples/plos.csl")
+```
 
 
