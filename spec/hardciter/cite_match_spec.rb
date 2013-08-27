@@ -1,17 +1,19 @@
-require "spec_helper"
-require 'lib/hard_citer'
+# encoding: utf-8
+require 'spec_helper'
 
-describe HardCiter::CiteMatch do
-  describe "initialization" do
-    describe "when a key is provide" do
-        it "should create a Cite Match object with accessible key" do
-          cite_match=HardCiter::CiteMatch.new("{LibraryWebsite:tt}")
-          cite_match.key.should == "{LibraryWebsite:tt}"
+module HardCiter
+  describe CiteMatch do
+    describe 'initialization' do
+      context 'when a key is provide' do
+          it 'should create a Cite Match object with accessible key' do
+            cite_match = CiteMatch.new('{LibraryWebsite:tt}')
+            cite_match.key.should == '{LibraryWebsite:tt}'
+          end
+      end
+      context 'when a key is not provided' do
+        it 'should raise a error' do
+          expect { CiteMatch.new() }.to raise_error
         end
-    end
-    describe "when a key is not provided" do
-      it "should raise a error" do
-        expect{ HardCiter::CiteMatch.new() }.to raise_error
       end
     end
   end
