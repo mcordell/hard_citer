@@ -4,7 +4,6 @@
 #tests
 require 'spec_helper'
 require_relative '../lib/hard_citer'
-require_relative '../lib/cite_match'
 
 describe HardCiter, "#parse_sentence" do
     let(:hard_citer){ HardCiter.new }

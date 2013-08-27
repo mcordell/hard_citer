@@ -6,6 +6,8 @@ gem 'bibtex-ruby'
 gem 'citeproc-ruby'
 
 group :development,:test do
-	gem 'rspec'
+  gem 'coveralls'
+  gem 'rspec'
   gem 'factory_girl'
+  gem 'rake'
 end
