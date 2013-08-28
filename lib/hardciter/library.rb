@@ -22,8 +22,8 @@ module HardCiter
   class BibTexLibrary
     attr_accessor :bibtex
 
-    def initialize(path)
-      load_from_file(path)
+    def initialize(path=nil)
+      load_from_file(path) if path
     end
 
     def load_from_file(path)
