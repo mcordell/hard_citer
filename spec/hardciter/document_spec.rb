@@ -35,21 +35,25 @@ module HardCiter
 
       context 'text is a file object' do
         let(:filename) { 'filename' }
-        let(:lines_array) { %w('String1', 'String2') }
-        let(:file_object) do
+        let(:lines_array) { %w("String1","String2") }
+
+        before do 
           File.open filename, 'w' do |file|
             lines_array.each do |line|
               file.write(line)
             end
           end
         end
+
         after do
           File.delete(filename)
         end
 
-        before { doc.text_array = file_object }
-
-        it { doc.text_array.should be lines_array  }
+        it "should have a matching string array to file contents" do
+          file_object = File.open(filename, 'r')
+          doc.text_array = file_object
+          doc.text_array.should eq lines_array
+        end
       end
 
       context 'text is an unknown formats' do
