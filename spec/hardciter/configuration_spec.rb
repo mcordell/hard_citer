@@ -23,6 +23,7 @@ module HardCiter
 
   describe "#configure" do
     context "when provided a block" do
+      after { HardCiter.configuration.reset }
       it "should change configuration values of the HardCiter" do
         csl_new_value = "Testing new value"
         HardCiter.configure do |config|
