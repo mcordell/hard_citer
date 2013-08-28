@@ -1,24 +1,6 @@
 # encoding: utf-8
 require 'bibtex'
 module HardCiter
-  class Library < Hash
-
-    def initialize(path = nil)
-      load_lib(path)     
-    end
-
-
-    def load_lib(path = nil)
-      if File.exists? path
-        load_from_file(path)     
-      end
-    end
-
-    def get_citation()
-    end
-  end
-
-
   class BibTexLibrary
     attr_accessor :bibtex
 
