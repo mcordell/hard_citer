@@ -17,9 +17,9 @@ module HardCiter
         if entry.nil?
           cite_text = cite_key
         else
-          cite_text = CiteProc.process(cite_match.citation.to_citeproc,
+          cite_text = CiteProc.process(entry.to_citeproc,
                                        style: csl_style, format: :html)
-          strip_extra_papers_brackets cite_text
+          strip_extra_brackets cite_text
         end
 
         out_lines.push '<li><a name = "' +
@@ -29,7 +29,7 @@ module HardCiter
       out_lines.push '</ol>'
     end
 
-    def strip_extra_papers_brackets(line)
+    def strip_extra_brackets(line)
         line.gsub!(/\{|\}/, '')
     end
 
@@ -44,9 +44,6 @@ module HardCiter
 
         elsif cite_match[0].is_a? Array
           output = multi_cite(cite_match, line, pos_off_set)
-        end
-        if output.nil?
-          puts "wait"
         end
         processed_line += output
       end
