@@ -22,7 +22,7 @@ module HardCiter
 
     #Citer
     def cite_text(text)
-      #validate_prerequisites 
+      validate_prerequisites 
       doc = Document.new(text)
       find_all_citations(doc.text_array) #move this from bib to doc? TODO
       output_text = integrate_citations_into_text(doc.text_array)
@@ -30,8 +30,11 @@ module HardCiter
     end
 
     def validate_prerequisites
-      #TODO
-      #check to make sure we have everything we need
+      if @bibliography.nil?
+        raise "Bibliography missing cannot proceed with citation"
+      elsif @csl.nil?
+        raise "No citation format found, cannot proceed with citation"
+      end
     end
 
     #Citer
