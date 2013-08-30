@@ -1,12 +1,12 @@
 module HardCiter
   class Configuration
-    attr_accessor :csl, :bibliography_intext, :intext_regex
+    attr_accessor :csl, :bibliography_key, :citation_key
 
     CSL = File.expand_path("../../../examples/plos.csl", __FILE__)
       
-    BIBLIOGRAPHY_INTEXT_KEY = /\{papers2_bibliography\}/
+    BIBLIOGRAPHY_KEY = /\{papers2_bibliography\}/
 
-    INTEXT_REGEX = /\{(\w*:\w*)\}/
+    CITATION_KEY = /\{(\w*:\w*)\}/ 
 
     def initialize
       self.reset
@@ -14,10 +14,9 @@ module HardCiter
 
     def reset
       @csl = CSL
-      @bibliography_intext = BIBLIOGRAPHY_INTEXT_KEY
-      @intext_regex = INTEXT_REGEX
+      @bibliography_key = BIBLIOGRAPHY_KEY
+      @citation_key = CITATION_KEY 
     end
-
   end
 
   class << self
