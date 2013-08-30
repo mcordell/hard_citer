@@ -3,8 +3,8 @@ module HardCiter
     attr_accessor :bibliography_intext, :intext_regex, :bib_out_location, :citation_locations, :citations
 
     def initialize
-      @bibliography_intext = HardCiter::Configuration::BIBLIOGRAPHY_INTEXT_KEY
-      @intext_regex = HardCiter::Configuration::INTEXT_REGEX
+      @bibliography_intext = HardCiter.configuration.bibliography_intext
+      @intext_regex = HardCiter.configuration.intext_regex
       @citation_locations = {}
       @citations = {}
     end
@@ -31,7 +31,7 @@ module HardCiter
 
     def parse_line(line,index)
       @bib_out_location = index if has_bibliography_key?(line)
-      regex_matches = find_intext_citations(line) 
+      find_intext_citations(line) 
     end
 
     def group_matches(matches,line)
