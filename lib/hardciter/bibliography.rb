@@ -81,5 +81,9 @@ module HardCiter
       end
       [last_match[0],last_match[1]]
     end
+
+    def next_citation_index
+      @citations.length + 1
+    end
   end
 end
