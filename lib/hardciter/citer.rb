@@ -1,6 +1,6 @@
 module HardCiter
   class Citer
-    BIBTEX_LIBRARY_REGEX = /\.bib$/
+    
     attr_accessor :library, :styler, :csl, :bibliography
 
     #Citer
@@ -13,7 +13,7 @@ module HardCiter
 
     #Citer
     def initialize_library_by_path(path)
-      if path =~ BIBTEX_LIBRARY_REGEX
+      if path =~ HardCiter.configuration.bibtex_library_regex
         @library = BibTexLibrary.new(path)
       else
         raise "Unknown path type"
@@ -30,8 +30,8 @@ module HardCiter
     end
 
     def validate_prerequisites
-      if @bibliography.nil?
-        raise "Bibliography missing cannot proceed with citation"
+      if @library.nil?
+        raise "Library missing cannot proceed with citation"
       elsif @csl.nil?
         raise "No citation format found, cannot proceed with citation"
       end
