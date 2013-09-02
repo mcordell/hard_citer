@@ -4,8 +4,8 @@ require 'spec_helper'
 module HardCiter
   describe Parser do
     let(:parser) { Parser.new() }
-    let(:default_bib_key) { HardCiter.configuration.bibliography_key }
-    let(:default_citation_key) { HardCiter.configuration.citation_key }
+    let(:default_bib_key) { HardCiter.configuration.bibliography_pattern }
+    let(:default_citation_key) { HardCiter.configuration.intext_pattern }
     let(:bib_key_example) { "{papers2_bibliography}" }
     let(:citation_key_example) { "{charles:19jk}" }
 

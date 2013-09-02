@@ -4,8 +4,8 @@ module HardCiter
     attr_accessor :bib_key, :citation_key
 
     def initialize(bib_key=nil,citation_key=nil)
-      @bib_key = bib_key ? bib_key : HardCiter.configuration.bibliography_key
-      @citation_key = citation_key ? citation_key : HardCiter.configuration.citation_key
+      @bib_key = bib_key ? bib_key : HardCiter.configuration.bibliography_pattern
+      @citation_key = citation_key ? citation_key : HardCiter.configuration.intext_pattern
     end
     
     def has_bibliography_key?(line)

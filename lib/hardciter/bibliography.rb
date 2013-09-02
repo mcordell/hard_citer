@@ -3,8 +3,8 @@ module HardCiter
     attr_accessor :bibliography_intext, :intext_regex, :bib_out_location, :citation_locations, :citations
 
     def initialize
-      @bibliography_intext = HardCiter.configuration.bibliography_key
-      @intext_regex = HardCiter.configuration.citation_key
+      @bibliography_intext = HardCiter.configuration.bibliography_pattern
+      @intext_regex = HardCiter.configuration.intext_pattern
       @citation_locations = {}
       @citations = {}
     end

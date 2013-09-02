@@ -3,21 +3,22 @@ require 'spec_helper'
 
 module HardCiter
 
+
   describe '#configuration' do
     let(:default_csl) { HardCiter::Configuration::CSL }
-    let(:default_bibliography_key) { HardCiter::Configuration::BIBLIOGRAPHY_KEY }
-    let(:default_citation_key) { HardCiter::Configuration::CITATION_KEY }
+    let(:default_bibliography_pattern) { HardCiter::Configuration::BIBLIOGRAPHY_PATTERN }
+    let(:default_intext_pattern) { HardCiter::Configuration::INTEXT_PATTERN }
 
     it 'should allow access to default CSL path' do
-          HardCiter.configuration.csl.should eq default_csl
+      HardCiter.configuration.csl.should eq default_csl
     end
 
     it 'should allow access to default Bibliography intext key' do
-      HardCiter.configuration.bibliography_key.should eq default_bibliography_key
+      HardCiter.configuration.bibliography_pattern.should eq default_bibliography_pattern
     end
 
     it 'should allow access to default intext regex' do
-          HardCiter.configuration.citation_key.should eq default_citation_key
+      HardCiter.configuration.intext_pattern.should eq default_intext_pattern
     end
   end
 
