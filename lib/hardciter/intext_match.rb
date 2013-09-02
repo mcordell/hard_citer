@@ -10,5 +10,10 @@ module HardCiter
       @regex_match = regex_match
       @type = type
     end
+
+    def cite_key
+      match_data = HardCiter.configuration.cite_key_pattern.match(@regex_match)
+      match_data[0] if match_data.is_a? MatchData
+    end
   end
 end
