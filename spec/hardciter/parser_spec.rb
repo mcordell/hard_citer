@@ -41,7 +41,7 @@ module HardCiter
         before do
           @no_intext_citations = "this line has no intext citations"
         end
-        it "should return nil" do
+        it "should return an empty array" do
           result = parser.parse_line(@no_intext_citations)
           result.should be_empty
         end
