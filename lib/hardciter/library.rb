@@ -12,7 +12,7 @@ module HardCiter
       @bibtex = BibTeX.open(path)
     end
 
-    def get_citation(key)
+    def get_entry(key)
       @bibtex[key]
     end
 

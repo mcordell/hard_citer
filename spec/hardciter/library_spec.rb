@@ -18,7 +18,7 @@ module  HardCiter
     end
 
 
-    describe 'getting a citation'  do
+    describe 'getting an entry'  do
       before do
         bibtex_library.bibtex = BibTeX.parse <<-END
         @book{pickaxe,
@@ -32,23 +32,23 @@ module  HardCiter
         END
       end
 
-      context 'citation exists in BibTexLibrary' do 
+      context 'entry exists in BibTexLibrary' do 
         describe 'using the hash brackets' do
           it 'should return a BibTex::Entry' do
             bibtex_library['pickaxe'].should be_kind_of(BibTeX::Entry)
           end
         end
 
-        describe "using the get_citation method" do
+        describe "using the get_entry method" do
           it 'should return a BibTex::Entry' do
             bibtex_library['pickaxe'].should be_kind_of(BibTeX::Entry)
           end
         end
       end
 
-      context 'citation does not exist in the BibTex library' do
+      context 'entry does not exist in the BibTex library' do
         describe 'using the hash brackets' do
-          it { bibtex_library.get_citation('not-valid').should be_nil }
+          it { bibtex_library.get_entry('not-valid').should be_nil }
         end
       end
     end
