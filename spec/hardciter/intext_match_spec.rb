@@ -8,6 +8,8 @@ module HardCiter
     it { should respond_to :position }
     it { should respond_to :regex_match }
     it { should respond_to :type }
+    it { should respond_to :next_in_group }
+    it { should respond_to :citation }
 
     describe "#cite_key" do
       context "using the configured cite_key pattern with a valid match in regex_match" do

@@ -1,6 +1,7 @@
 module HardCiter
   class Bibliography
-    attr_accessor :bibliography_intext, :intext_regex, :bib_out_location, :citation_locations, :citations
+    attr_accessor :bibliography_intext, :intext_regex, :bib_out_line, :bib_out_match,
+                  :citation_locations, :citations, :bit_out_location
 
     def initialize
       @bibliography_intext = HardCiter.configuration.bibliography_pattern
@@ -17,6 +18,26 @@ module HardCiter
       end
     end
 
+    def add_intext_match(intext_match,line_num)
+      if intext_match.type == HardCiter::BIBLIOGRAPHY_OUT_MATCH
+        set_bib_out(intext_match,line_num)
+        return nil
+      else
+        get_or_create_cite_match(intext_match)
+      end
+    end
+
+    def set_bib_out(intext_match,line_num)
+      @bib_out_line = line_num
+      @bib_out_match = intext_match
+    end
+
+    def get_or_create_cite_match(intext_match)
+      if @citations.has_key?(intext_match.cite_key)
+        @citations[intext_match.cite_key]
+      end
+    end
+    
     def has_bibliography_key?(line)
       line =~ @bibliography_intext
     end

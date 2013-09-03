@@ -3,7 +3,7 @@ module HardCiter
   BIBLIOGRAPHY_OUT_MATCH = 2
   INTEXT_CITATION_MATCH = 1 
   class IntextMatch
-    attr_accessor :position, :type, :regex_match
+    attr_accessor :position, :type, :regex_match, :citation, :next_in_group
 
     def initialize(position=nil, regex_match=nil, type=nil)
       @position = position

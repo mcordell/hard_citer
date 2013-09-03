@@ -83,7 +83,7 @@ module HardCiter
         cite_match = @bibliography.citations[match_key]
       else
         cite_match = CiteMatch.new(match_key)
-        cite_match.bib_number = @bibliography.citations.length + 1
+        cite_match.bib_number = @bibliography.next_citation_index
         cite_match.citation = @library.get_citation(convert_match_to_cite_key(match_key))
         @bibliography.citations[match_key] = cite_match
       end
