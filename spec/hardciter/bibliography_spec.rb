@@ -1,4 +1,5 @@
 # encoding: utf-8
+require 'spec_helper'
 module HardCiter
   describe Bibliography do
 
@@ -31,15 +32,15 @@ module HardCiter
                  with a cite_key that exists in its citations " do
           let(:cite_key) { "xyz:123" }
           before do 
-            @cite_match = CiteMatch.new(cite_key)
-            bibliography.citations[cite_key] = @cite_match
+            @citation = Citation.new(cite_key)
+            bibliography.citations[cite_key] = @citation
             @intext_match = IntextMatch.new
             @intext_match.type = INTEXT_CITATION_MATCH
             @intext_match.regex_match = cite_key
           end
 
-          it "should return the CiteMatch from citations" do
-            bibliography.add_intext_match(@intext_match,line_num).should be @cite_match
+          it "should return the Citation from citations" do
+            bibliography.add_intext_match(@intext_match,line_num).should be @citation
           end
         end
       end

@@ -2,7 +2,7 @@
 require 'bibtex'
 require 'citeproc'
 require File.expand_path("../hardciter/bibliography.rb", __FILE__)
-require File.expand_path("../hardciter/cite_match.rb", __FILE__)
+require File.expand_path("../hardciter/citation.rb", __FILE__)
 require File.expand_path("../hardciter/citer.rb", __FILE__)
 require File.expand_path("../hardciter/configuration.rb", __FILE__)
 require File.expand_path("../hardciter/document.rb", __FILE__)

@@ -42,21 +42,21 @@ module HardCiter
     def find_all_citations(text)
       text.each_with_index() do |line, index|
         regex_matches = @bibliography.parse_line(line,index)
-        matches = regex_matches_to_cite_matches(regex_matches) unless regex_matches.empty?
+        matches = regex_matches_to_citations(regex_matches) unless regex_matches.empty?
         @bibliography.mark_match_positions(matches,line,index) unless matches.nil?        
       end
     end
 
-    def regex_matches_to_cite_matches(regex_matches)
-      regex_matches.map { |m| get_or_create_cite_match(m) }
+    def regex_matches_to_citations(regex_matches)
+      regex_matches.map { |m| get_or_create_citation(m) }
     end
 
     # Document, Bib
     def integrate_citations_into_text(text)
       output_text = text.dup
-      @bibliography.citation_locations.each do |line_number,cite_matches|
+      @bibliography.citation_locations.each do |line_number,citations|
         text_line = output_text[line_number]
-        output_text[line_number] = @styler.style_line(text_line,cite_matches)
+        output_text[line_number] = @styler.style_line(text_line,citations)
       end
       output_text
     end
@@ -76,18 +76,18 @@ module HardCiter
       end
     end
 
-    def get_or_create_cite_match(regex_match)
+    def get_or_create_citation(regex_match)
       match_key, match_pos = regex_match
 
       if @bibliography.citations.has_key?(match_key)
-        cite_match = @bibliography.citations[match_key]
+        citation = @bibliography.citations[match_key]
       else
-        cite_match = CiteMatch.new(match_key)
-        cite_match.bib_number = @bibliography.next_citation_index
-        cite_match.citation = @library.get_citation(convert_match_to_cite_key(match_key))
-        @bibliography.citations[match_key] = cite_match
+        citation = Citation.new(match_key)
+        citation.bib_number = @bibliography.next_citation_index
+        citation.citation = @library.get_citation(convert_match_to_cite_key(match_key))
+        @bibliography.citations[match_key] = citation
       end
-      [cite_match, match_pos]
+      [citation, match_pos]
     end
 
     def convert_match_to_cite_key(match)

@@ -12,8 +12,8 @@ module HardCiter
 
     def get_bibliography_lines(bibliography_array, csl_style)
       out_lines = ['<ol class="bibliography">']
-      bibliography_array.citations.each do |cite_key, cite_match|
-        entry = cite_match.citation
+      bibliography_array.citations.each do |cite_key, citation|
+        entry = citation.citation
         if entry.nil?
           cite_text = cite_key
         else
@@ -23,7 +23,7 @@ module HardCiter
         end
 
         out_lines.push '<li><a name = "' +
-                       "bibliography_#{cite_match.bib_number}\">" +
+                       "bibliography_#{citation.bib_number}\">" +
                        cite_text + '</a></li>'
       end
       out_lines.push '</ol>'
@@ -36,27 +36,27 @@ module HardCiter
     def style_line(line, citations)
       processed_line = ''
       pos_off_set = 0
-      citations.each do |cite_match|
-        if cite_match[0].is_a?(CiteMatch)
-          output, offset = single_cite(cite_match[0],
-                                       cite_match[1] - pos_off_set, line)
+      citations.each do |citation|
+        if citation[0].is_a?(Citation)
+          output, offset = single_cite(citation[0],
+                                       citation[1] - pos_off_set, line)
           pos_off_set += offset
 
-        elsif cite_match[0].is_a? Array
-          output = multi_cite(cite_match, line, pos_off_set)
+        elsif citation[0].is_a? Array
+          output = multi_cite(citation, line, pos_off_set)
         end
         processed_line += output
       end
       processed_line += line
     end
 
-    def multi_cite(cite_match_array, line, pos_offset)
+    def multi_cite(citation_array, line, pos_offset)
       output_line = @open_tag
-      cite_match_array.each_with_index do |cite_match, index|
-        citation, pos = cite_match
+      citation_array.each_with_index do |citation, index|
+        citation, pos = citation
         output, off_set = single_cite(citation, pos - pos_offset, line)
         output_line += output
-        output_line += @multi_separator unless index == cite_match.size - 1
+        output_line += @multi_separator unless index == citation.size - 1
         pos_offset += off_set
       end
       output_line += @close_tag

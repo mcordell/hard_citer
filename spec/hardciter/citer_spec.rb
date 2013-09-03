@@ -52,9 +52,9 @@ end
 #  let(:two_unpaired_matches_line) { "This sentence has two unpaired{Biswal:2010fj} citations{Davis:2003wp}." }
 #  let(:one_separate_one_pair_line) { "This sentence has two paired citations{Davis:2003wp}{Biswal:2010fj} and "+
 #                                    "a lone citation{Jones:1999qs}." }
-#  let(:biswal_citation) { CiteMatch.new("{Biswal:2010fj}") }
-#  let(:jones_citation) { CiteMatch.new("{Jones:1999qs}") }
-#  let(:davis_citation) { CiteMatch.new("{Davis:2003wp}") }
+#  let(:biswal_citation) { Citation.new("{Biswal:2010fj}") }
+#  let(:jones_citation) { Citation.new("{Jones:1999qs}") }
+#  let(:davis_citation) { Citation.new("{Davis:2003wp}") }
 #
 #  describe "when given a line with two matches not next to each other" do
 #    it "should return an array with two elements (one for each match)" do

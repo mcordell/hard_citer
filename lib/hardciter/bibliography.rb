@@ -23,7 +23,7 @@ module HardCiter
         set_bib_out(intext_match,line_num)
         return nil
       else
-        get_or_create_cite_match(intext_match)
+        get_or_create_citation(intext_match)
       end
     end
 
@@ -32,7 +32,7 @@ module HardCiter
       @bib_out_match = intext_match
     end
 
-    def get_or_create_cite_match(intext_match)
+    def get_or_create_citation(intext_match)
       if @citations.has_key?(intext_match.cite_key)
         @citations[intext_match.cite_key]
       end
