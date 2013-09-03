@@ -93,5 +93,41 @@ module HardCiter
     def convert_match_to_cite_key(match)
       match.gsub(/\{|\}/, '')
     end
+
+    def group_matches!(matches, line)
+      out_matches = []
+      current_match = matches.shift unless matches.empty?
+      head = current_match
+      until matches.empty?
+        next_match = matches.shift
+        if matches_are_paired?(current_match, next_match, line)
+          pair_matches(current_match,next_match)
+        else
+          out_matches.push(head)
+          head = next_match
+        end
+        current_match = next_match
+      end
+      out_matches.each { |m| matches.push m }
+      matches.push(head)
+    end
+
+    private
+      def matches_are_paired?(match_first, match_second, line)
+        end_of_match = match_first.position + match_first.regex_match.length
+        while end_of_match < match_second.position
+          if line[end_of_match] =~ /\s/
+            end_of_match += 1
+          else
+            return false
+          end
+        end
+        return true
+      end
+
+      def pair_matches(first_match, second_match)
+        first_match.next_in_group = second_match
+      end
+
   end
 end

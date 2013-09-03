@@ -40,6 +40,93 @@ module HardCiter
         end
       end
     end
+
+    describe "#group_matches!" do
+      context "with a line has one match that follows another" do
+        before do
+          @line = "{match:one}{match:two}"
+          @matches = Parser.new.parse_line(@line)
+          @first_match = @matches[0]
+          @second_match = @matches[1]
+          citer.group_matches!(@matches, @line)
+        end
+
+        describe "moves the trailing match to the leading match's next_in_group" do
+          it "should add the trailing match to leading match's next_in_group" do
+            @first_match.next_in_group.should be @second_match
+          end
+          it "should delete the second match from the matches" do
+            @matches.should_not include(@second_match)
+          end
+        end
+      end
+
+      context "with a line that has one match that follows another with white space" do
+        before do
+          @line = "{match:one} {match:two}"
+          @matches = Parser.new.parse_line(@line)
+          @first_match = @matches[0]
+          @second_match = @matches[1]
+          citer.group_matches!(@matches, @line)
+        end
+        describe "moves the trailing match to the leading match's next_in_group" do
+          it "should add the trailing match to leading match's next_in_group" do
+            @first_match.next_in_group.should be @second_match
+          end
+          it "should delete the second match from the matches" do
+            @matches.should_not include(@second_match)
+          end
+        end
+      end
+
+      context "with a line that has three matches in a row" do
+        before do
+          @line = "{match:one}{match:two}{match:three}"
+          @matches = Parser.new.parse_line(@line)
+          @first_match = @matches[0]
+          @second_match = @matches[1]
+          @third_match = @matches[2]
+          citer.group_matches!(@matches, @line)
+        end
+        describe "moves the trailing match to the leading match's next_in_group" do
+          it "should add the second match to leading match's next_in_group" do
+            @first_match.next_in_group.should be @second_match
+          end
+          it "should add the third match to second match's next_in_group" do
+            @second_match.next_in_group.should be @third_match
+          end
+          it "should leave the first_match in the matches array" do
+            @matches.should include (@first_match)
+          end
+          it "should delete the second and third match from the matches" do
+            @matches.should_not include(@second_match)
+            @matches.should_not include(@third_match)
+          end
+        end
+      end
+
+      context "with a line that has three matches, with two in a row" do
+        before do
+          @line = "{match:one}{match:two} something that is not a citation {match:three}"
+          @matches = Parser.new.parse_line(@line)
+          @first_match = @matches[0]
+          @second_match = @matches[1]
+          @third_match = @matches[2]
+          citer.group_matches!(@matches, @line)
+        end
+        describe "moves the trailing match to the leading match's next_in_group" do
+          it "should add the second match to leading match's next_in_group" do
+            @first_match.next_in_group.should be @second_match
+          end
+          it "should delete the second match from the matches" do
+            @matches.should_not include(@second_match)
+          end
+          it "should not delete the third match from matches" do
+            @matches.should include(@third_match)
+          end
+        end
+      end
+    end
   end
 end
 
