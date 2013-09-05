@@ -41,6 +41,23 @@ module HardCiter
       end
     end
 
+    describe "#parse_all_lines" do
+      let(:document) { Document.new } 
+      context "when supplied a document with intext citations" do
+        before do
+          document.text_array = [ "This sentence has a citation{xyz:123}.",
+            "This sentence does not.",
+            "But this one has {x2:jk}, has one in the middle."]
+        end
+        it "should return a lines with IntextMatches on lines that have them" do
+          result = citer.parse_all_lines(document)
+          result[0][0].should be_kind_of(IntextMatch)
+          result[1].should be_empty
+          result[2][0].should be_kind_of(IntextMatch)
+        end
+      end
+    end
+
     describe "#group_matches!" do
       context "with a line has one match that follows another" do
         before do

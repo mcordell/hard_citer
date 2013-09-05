@@ -9,6 +9,7 @@ module HardCiter
       @bibliography = HardCiter::Bibliography.new
       @styler = HardCiter::Styler.new
       @csl = HardCiter::Configuration::CSL
+      @parser = HardCiter::Parser.new
     end
 
     #Citer
@@ -44,6 +45,12 @@ module HardCiter
         regex_matches = @bibliography.parse_line(line,index)
         matches = regex_matches_to_citations(regex_matches) unless regex_matches.empty?
         @bibliography.mark_match_positions(matches,line,index) unless matches.nil?        
+      end
+    end
+
+    def parse_all_lines(document)
+      document.text_array.each_with_object([]) do |line,out|
+        out.push(@parser.parse_line(line))
       end
     end
 
