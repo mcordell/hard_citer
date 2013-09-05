@@ -17,7 +17,7 @@ module HardCiter
       if path =~ HardCiter.configuration.bibtex_library_regex
         @library = BibTexLibrary.new(path)
       else
-        raise "Unknown path type"
+        raise "Unknown library path type"
       end
     end
 

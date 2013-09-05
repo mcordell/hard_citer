@@ -19,6 +19,13 @@ module HardCiter
           citer.library.should be_kind_of(BibTexLibrary)
         end
       end
+      context "when path is not a known format" do
+        before { @invalid_path = 'xyz.avi' }
+        it 'should raise an error' do
+          expect { citer.initialize_library_by_path(@invalid_path) }.
+          to raise_error(StandardError, 'Unknown library path type')
+        end
+      end
     end
 
     describe "#validate_prerequisites" do
