@@ -1,13 +1,13 @@
 module HardCiter
   class Citer
     
-    attr_accessor :library, :styler, :csl, :bibliography
+    attr_accessor :library, :output, :csl, :bibliography
 
     #Citer
     def initialize(path = nil)
       initialize_library_by_path(path) if path
       @bibliography = HardCiter::Bibliography.new
-      @styler = HardCiter::Styler.new
+      @output = HardCiter::HtmlOutput.new
       @csl = HardCiter::Configuration::CSL
       @parser = HardCiter::Parser.new
     end
@@ -63,7 +63,7 @@ module HardCiter
       output_text = text.dup
       @bibliography.citation_locations.each do |line_number,citations|
         text_line = output_text[line_number]
-        output_text[line_number] = @styler.style_line(text_line,citations)
+        output_text[line_number] = @output.style_line(text_line,citations)
       end
       output_text
     end
@@ -72,7 +72,7 @@ module HardCiter
     def integrate_bibliography_into_text(text)
       out_location = @bibliography.bib_out_location
       if out_location
-        bib_text = styler.get_bibliography_lines(@bibliography, @csl)
+        bib_text = @output.get_bibliography_lines(@bibliography, @csl)
         bib_end = out_location + 1
         after_bib_location = text[(bib_end..text.size-1)]
         return text[0..bib_end] + bib_text + after_bib_location

@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'citeproc'
 module HardCiter
-  class Styler
+  class HtmlOutput
     
     def initialize
       @open_tag = ''

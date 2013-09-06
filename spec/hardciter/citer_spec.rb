@@ -10,7 +10,7 @@ module HardCiter
 
     it { should respond_to :library }
     it { should respond_to :bibliography }
-    it { should respond_to :styler }
+    it { should respond_to :output }
 
     describe '#initialize_library_by_path' do
       context "path is a valid file ending in Bibtex's .bib extension" do
