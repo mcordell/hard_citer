@@ -1,19 +1,19 @@
 # encoding: utf-8
 module HardCiter
   class Parser
-    attr_accessor :bib_key, :citation_key
+    attr_accessor :bib_key_pattern, :citation_key_pattern
 
-    def initialize(bib_key=nil,citation_key=nil)
-      @bib_key = bib_key ? bib_key : HardCiter.configuration.bibliography_pattern
-      @citation_key = citation_key ? citation_key : HardCiter.configuration.intext_pattern
+    def initialize(bib_key_pattern=nil,citation_key_pattern=nil)
+      @bib_key_pattern = bib_key_pattern ? bib_key_pattern : HardCiter.configuration.bibliography_pattern
+      @citation_key_pattern = citation_key_pattern ? citation_key_pattern : HardCiter.configuration.intext_pattern
     end
     
     def has_bibliography_key?(line)
-      line =~ @bib_key
+      line =~ @bib_key_pattern
     end
 
     def create_bib_match(line)
-      match_data = @bib_key.match(line)
+      match_data = @bib_key_pattern.match(line)
       create_match(match_data, HardCiter::BIBLIOGRAPHY_OUT_MATCH)
     end
 
@@ -30,7 +30,7 @@ module HardCiter
     end
 
     def find_intext_citations(line)
-      line.enum_for(:scan, @citation_key).map do
+      line.enum_for(:scan, @citation_key_pattern).map do
         create_citation_match(Regexp.last_match)
       end
     end

@@ -4,34 +4,34 @@ require 'spec_helper'
 module HardCiter
   describe Parser do
     let(:parser) { Parser.new() }
-    let(:default_bib_key) { HardCiter.configuration.bibliography_pattern }
-    let(:default_citation_key) { HardCiter.configuration.intext_pattern }
+    let(:default_bib_key_pattern) { HardCiter.configuration.bibliography_pattern }
+    let(:default_cite_key_pattern) { HardCiter.configuration.intext_pattern }
     let(:bib_key_example) { "{papers2_bibliography}" }
     let(:citation_key_example) { "{charles:19jk}" }
 
     describe "initialization" do 
       context "when bibkey is not provided" do 
         it "should set its bibkey to the default configuration" do 
-          parser.bib_key.should be default_bib_key
+          parser.bib_key_pattern.should be default_bib_key_pattern
         end
       end
       context "when intext_key is not provided" do 
         it "should set its intext_key to the default configuration" do 
-          parser.citation_key.should be default_citation_key
+          parser.citation_key_pattern.should be default_cite_key_pattern
         end
       end
       context "when intext_key provided" do
         it "should set its citation_key to that regex" do
           citation_key_pattern = /\[pattern\]/
           new_parser = Parser.new(nil,citation_key_pattern)
-          new_parser.citation_key.should be citation_key_pattern
+          new_parser.citation_key_pattern.should be citation_key_pattern
         end
       end
       context "when bib_key provided" do
         it "should set its bib_key to that regex" do
           bib_key_pattern = /\[pattern\]/
           new_parser = Parser.new(bib_key_pattern)
-          new_parser.bib_key.should be bib_key_pattern
+          new_parser.bib_key_pattern.should be bib_key_pattern
         end
       end
     end
