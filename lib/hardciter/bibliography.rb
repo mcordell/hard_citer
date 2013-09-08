@@ -21,7 +21,7 @@ module HardCiter
     def add_intext_match(intext_match,line_num)
       if intext_match.type == HardCiter::BIBLIOGRAPHY_OUT_MATCH
         set_bib_out(intext_match,line_num)
-        return nil
+        nil
       else
         get_or_create_citation(intext_match)
       end
@@ -35,6 +35,9 @@ module HardCiter
     def get_or_create_citation(intext_match)
       if @citations.has_key?(intext_match.cite_key)
         @citations[intext_match.cite_key]
+      else
+        citation = HardCiter::Citation.new(intext_match.cite_key)
+        @citations[intext_match.cite_key] = citation 
       end
     end
     

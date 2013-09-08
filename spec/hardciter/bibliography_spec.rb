@@ -43,6 +43,23 @@ module HardCiter
             bibliography.add_intext_match(@intext_match,line_num).should be @citation
           end
         end
+
+        context "when intext_match is of the type INTEXT_CITATION_MATCH "+
+                "with a cite_key that does not exist in citations"
+        let(:cite_key) { "newkey:123"}
+        before do 
+          @intext_match = IntextMatch.new
+          @intext_match.type = INTEXT_CITATION_MATCH
+          @intext_match.regex_match = cite_key
+        end
+
+        it "should return a new Citation" do
+          bibliography.add_intext_match(@intext_match,line_num).should be_kind_of(Citation)
+        end
+        it "should add the new Citation to its citations" do
+          expect{bibliography.add_intext_match(@intext_match,line_num)}.
+          to change{bibliography.citations.length}.by(1)
+        end
       end
     end
       
