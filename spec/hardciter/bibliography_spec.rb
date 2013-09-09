@@ -6,6 +6,7 @@ module HardCiter
     let(:bibliography) { Bibliography.new }
 
     subject { :bibliography }
+    
     describe "#add_intext_match" do
       let(:line_num) { 3 }
       context "when the line number is 3" do
@@ -63,7 +64,25 @@ module HardCiter
       end
     end
       
-    
+    describe "#add_citation" do
+      context "when provided a intext_match" do
+        before do 
+          bibliography.citations = {}
+          @intext_match = IntextMatch.new
+          @intext_match.regex_match = "text:123"
+        end
+
+        it "should add a citation to its citations" do
+          expect{ bibliography.add_citation(@intext_match)}.
+          to change{ bibliography.citations.length }.by(1)
+        end
+
+        it "should add a citation with the correct number" do
+          bibliography.add_citation(@intext_match)
+          bibliography.citations[@intext_match.cite_key].bib_number.should == 1
+        end
+      end
+    end
 
     describe "#next_citation_index" do
       describe "should return the next available index in the citation list" do

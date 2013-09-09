@@ -36,13 +36,18 @@ module HardCiter
       if @citations.has_key?(intext_match.cite_key)
         @citations[intext_match.cite_key]
       else
-        citation = HardCiter::Citation.new(intext_match.cite_key)
-        @citations[intext_match.cite_key] = citation 
+        add_citation(intext_match)
       end
     end
     
     def has_bibliography_key?(line)
       line =~ @bibliography_intext
+    end
+
+    def add_citation(intext_match)
+      citation = HardCiter::Citation.new(intext_match.cite_key)
+      citation.bib_number = next_citation_index
+      @citations[citation.key] = citation 
     end
 
     def mark_match_positions(citation_matches,line,index)
