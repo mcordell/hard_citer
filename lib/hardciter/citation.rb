@@ -1,14 +1,13 @@
 # encoding: utf-8
 module HardCiter  
   class Citation
-    attr_accessor :bib_number, :citation, :in_cite_text, :key
+    attr_accessor :bib_number, :entry, :in_cite_text, :key
 
-    def initialize(key, citation = nil, in_cite_text = nil)
+    def initialize(key, entry = nil, in_cite_text = nil)
       @key = key
       @citation = citation
       @in_cite_text = in_cite_text
     end
-
   end
 end
 
