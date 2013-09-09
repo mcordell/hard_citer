@@ -4,10 +4,20 @@ module HardCiter
   class HtmlOutput
     
     def initialize
-      @open_tag = ''
-      @close_tag = ''
+      @open_tag = '<sup>'
+      @close_tag = '</sup>'
       @multi_separator = '<sup>, </sup>'
       @separator_after_last = false
+    end
+
+    def output_line(line,intext_matches)
+      intext_matches.each do |match|
+        line_front = line[0..match.position-1]
+        line_end = line[match.position+match.regex_match.length..-1]
+        intext_out = @open_tag + match.citation.intext_output + @close_tag 
+        line = line_front + intext_out + line_end
+      end
+      line
     end
 
     def get_bibliography_lines(bibliography_array, csl_style)
