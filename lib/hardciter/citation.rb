@@ -5,7 +5,7 @@ module HardCiter
 
     def initialize(key, entry = nil, in_cite_text = nil)
       @key = key
-      @citation = citation
+      @entry = entry
       @in_cite_text = in_cite_text
     end
   end
