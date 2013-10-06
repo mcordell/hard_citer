@@ -1,4 +1,4 @@
-# Hard Citer[![Gem Version](https://badge.fury.io/rb/hard_citer.png)](http://badge.fury.io/rb/hard_citer)
+# Hard Citer[![Gem Version](https://badge.fury.io/rb/hard_citer.png)](http://badge.fury.io/rb/hard_citer)[![Coverage Status](https://coveralls.io/repos/mcordell/hard_citer/badge.png?branch=master)](https://coveralls.io/r/mcordell/hard_citer?branch=master)
 
 Hard Citer is a solution for outputting HTML bibliographies. When used in conjuction with a "cite while you write" tool, it can make writing and editing well-cited html eaiser. Using a in-text cited HTML document and a bibtex library, it can output a properly formatted bibliography. The default configuration is geared towards usage with Papers' [magic citations][1]. Papers does not provide an easy way to perform magic citations and produce a nicely formatted bibliography for HTML, from an HTML document source.
 
