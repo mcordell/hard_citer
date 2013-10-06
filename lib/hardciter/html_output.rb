@@ -2,11 +2,13 @@
 require 'citeproc'
 module HardCiter
   class HtmlOutput
-    
-    def initialize
-      @open_tag = '<sup>'
-      @close_tag = '</sup>'
-      @multi_separator = '<sup>, </sup>'
+    attr_accessor :csl, :bibliography
+
+    def initialize(csl=nil)
+      @csl = csl if csl
+      @open_tag = '<sup>['
+      @close_tag = ']</sup>'
+      @multi_separator = ','
       @separator_after_last = false
     end
 
@@ -14,75 +16,122 @@ module HardCiter
       intext_matches.each do |match|
         line_front = line[0..match.position-1]
         line_end = line[match.position+match.regex_match.length..-1]
-        intext_out = @open_tag + match.citation.intext_output + @close_tag 
+        intext_out = @open_tag + match.citation.intext_output + @close_tag
         line = line_front + intext_out + line_end
       end
       line
     end
 
-    def get_bibliography_lines(bibliography_array, csl_style)
-      out_lines = ['<ol class="bibliography">']
-      bibliography_array.citations.each do |cite_key, citation|
-        entry = citation.citation
-        if entry.nil?
-          cite_text = cite_key
-        else
-          cite_text = CiteProc.process(entry.to_citeproc,
-                                       style: csl_style, format: :html)
-          strip_extra_brackets cite_text
-        end
-
-        out_lines.push '<li><a name = "' +
-                       "bibliography_#{citation.bib_number}\">" +
-                       cite_text + '</a></li>'
+    def process_and_output_text(text,intext_matches)
+      text = text.text_array
+      raise "prepare_bibliography has not been run, cannot process text" if @bibliography.nil?
+      check_text_and_matches_length(text,intext_matches)
+      output = []
+      text.each_with_index do |line,index|
+        output+=style_line(line,intext_matches[index])
       end
-      out_lines.push '</ol>'
+      output
+    end
+
+    def check_text_and_matches_length(text,intext_matches)
+      if text.length != intext_matches.length
+        raise "Document length and intext_matches length are different, aborting."
+      end
+    end
+
+    def prepare_bibliography(bibliography)
+      @bibliography = ['<ol class="bibliography">']
+      bibliography.citations.each do |citation_key,citation|
+        entry = citation.entry
+        if entry.nil?
+          cite_text = citation_key
+        else
+          cite_text = CiteProc.process(entry.to_citeproc, style: @csl, format: :html)
+          strip_extra_brackets(cite_text)
+          @bibliography.push '<li><a name = "' +
+                         "bibliography_#{citation.bib_number}\">" +
+                         cite_text + '</a></li>'
+        end
+      end
+      @bibliography.push('</ol>')
     end
 
     def strip_extra_brackets(line)
         line.gsub!(/\{|\}/, '')
     end
 
-    def style_line(line, citations)
-      processed_line = ''
-      pos_off_set = 0
-      citations.each do |citation|
-        if citation[0].is_a?(Citation)
-          output, offset = single_cite(citation[0],
-                                       citation[1] - pos_off_set, line)
-          pos_off_set += offset
-
-        elsif citation[0].is_a? Array
-          output = multi_cite(citation, line, pos_off_set)
+    def style_line(line, line_matches)
+      pos_offset = 0
+      line_matches.each do |match|
+        if match
+          if match.type == BIBLIOGRAPHY_OUT_MATCH
+           return @bibliography
+          elsif match.next_in_group.nil?
+            line,pos_offset = single_cite(match,line,pos_offset)
+          else
+            line,pos_offset = multi_cite(match, line, pos_offset)
+          end
         end
-        processed_line += output
       end
-      processed_line += line
+      return [line]
     end
 
-    def multi_cite(citation_array, line, pos_offset)
-      output_line = @open_tag
-      citation_array.each_with_index do |citation, index|
-        citation, pos = citation
-        output, off_set = single_cite(citation, pos - pos_offset, line)
-        output_line += output
-        output_line += @multi_separator unless index == citation.size - 1
-        pos_offset += off_set
+    def multi_cite(match, line, pos_offset)
+      original_line_length = line.length
+      pos = match.position + pos_offset
+      before,after = split_at_match(pos,match.regex_match.length,line)
+      after = split_group_matches(match.next_in_group,after)
+      intexts = []
+      while match do
+        intexts.push(get_intext(match.citation))
+        match = match.next_in_group
       end
-      output_line += @close_tag
-
+      output_line = before + wrap_intext(intexts) + after
+      pos_offset += (output_line.length - original_line_length)
+      return output_line, pos_offset
     end
 
-    def single_cite(citation, pos, line)
-      key = citation.key
-      pos == 0 ? before_cite = '' : before_cite = line.slice!(0..pos - 1)
-      cite = line.slice!(0..key.length - 1)
-      off_set = before_cite.length + cite.length
-      in_text_citation = "<sup><a href = \"#bibliography_#{citation.bib_number}\
-                          \">#{citation.bib_number}</a></sup>"
-      output_line = before_cite + in_text_citation
-      [output_line, off_set]
+    def split_group_matches(match,line)
+      while match do
+        match_pos = Regexp.new(match.regex_match).match(line)
+        if match_pos.nil?
+          raise "match missing?"
+        else
+          line.slice!(match_pos.begin(0)..match.regex_match.length)
+        end
+        match = match.next_in_group
+      end
+      line
     end
 
+    def split_at_match(pos,match_length,line)
+      pos == 0 ? before = '' : before = line.slice!(0..pos - 1)
+      after = line.slice(match_length,line.length)
+      return before,after
+    end
+
+    def single_cite(match, line, pos_offset)
+      original_line_length = line.length
+      pos = match.position += pos_offset
+      before,after = split_at_match(pos,match.regex_match.length, line)
+      in_text_citation = wrap_intext([get_intext(match.citation)])
+      output_line = before + in_text_citation + after
+      pos_offset += (output_line.length - original_line_length)
+      return output_line, pos_offset
+    end
+
+    def get_intext(citation)
+      number = citation.bib_number
+      "<a href = \"#bibliography_#{number}\">#{number}</a>"
+    end
+
+    def wrap_intext(intext_citations)
+      output = @open_tag
+      intext_citations.each_with_index do |intext, index|
+        output += intext
+        output += @multi_separator unless index == intext_citations.length-1
+      end
+      output += @close_tag
+    end
   end
 end

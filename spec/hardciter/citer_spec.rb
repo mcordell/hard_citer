@@ -37,7 +37,7 @@ module HardCiter
         end
       end
       context "when csl is nil" do
-        before do 
+        before do
           citer.initialize_library_by_path(valid_path)
           citer.csl = nil
         end
@@ -49,7 +49,7 @@ module HardCiter
     end
 
     describe "#parse_all_lines" do
-      let(:document) { Document.new } 
+      let(:document) { Document.new }
       context "when supplied a document with intext citations" do
         before do
           document.text_array = [ "This sentence has a citation{xyz:123}.",
@@ -64,6 +64,72 @@ module HardCiter
         end
       end
     end
+
+    describe "#get_entries_from_library" do
+      context "@library is nil" do
+        before { citer.library = nil }
+        it "should raise an exception" do
+          expect { citer.get_entries_from_library }.to raise_error "Library is not set. Cannot get entries."
+        end
+      end
+      context "@bibliography is nil" do
+        before do
+          citer.library = double("library")
+          citer.bibliography = nil
+        end
+        it "should raise an exception" do
+          expect { citer.get_entries_from_library }.to raise_error "Bibliography is not set. Cannot get entries."
+        end
+      end
+
+      context "@bibliography is not nil but @bibliography.citations is nil" do
+        before  do
+          citer.library = double("library")
+          bibliography = double("bilbiography")
+          bibliography.stub(:citations) { nil }
+          citer.bibliography = bibliography
+        end
+
+        it "should raise an exception" do
+          expect { citer.get_entries_from_library }.to raise_error "Bibliography has no citations"
+        end
+      end
+
+      context "@bibliography is not nil but @bibliography.citations is empty" do
+        before  do
+          citer.library = double("library")
+          bibliography = double("bilbiography")
+          bibliography.stub(:citations) { [] }
+          citer.bibliography = bibliography
+        end
+
+        it "should raise an exception" do
+          expect { citer.get_entries_from_library }.to raise_error "Bibliography has no citations"
+        end
+      end
+
+      context "@bibliography.citations has matching entries in @library" do
+        before do
+          @citation = double(:citation)
+          @citation.stub(:cite_key){"cite:key"}
+          bibliography = double( "bibliography" )
+          bibliography.stub(:citations){[ @citation ]}
+          @entry = double("entry")
+          library = double( "library" )
+          library.stub(:get_entry).with("cite:key") { @entry }
+          library.stub("[]") { @entry }
+          citer.library = library
+          citer.bibliography = bibliography
+        end
+
+        it "should set the values of the citations 'entry' to corresponding entries" do
+          pending("fix test setup here, functionality is not broken")
+          @citation.should_receive(:entry=).with(@entry)
+          citer.get_entries_from_library
+        end
+      end
+    end
+
 
     describe "#group_matches!" do
       context "with a line has one match that follows another" do
@@ -131,7 +197,7 @@ module HardCiter
 
       context "with a line that has three matches, with two in a row" do
         before do
-          @line = "This sentence has two paired citations{Davis:2003wp}{Biswal:2010fj} and 
+          @line = "This sentence has two paired citations{Davis:2003wp}{Biswal:2010fj} and
                   a lone citation{Jones:1999qs}."
           @matches = Parser.new.parse_line(@line)
           @first_match = @matches[0]
