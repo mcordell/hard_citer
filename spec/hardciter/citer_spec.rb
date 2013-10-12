@@ -107,29 +107,7 @@ module HardCiter
           expect { citer.get_entries_from_library }.to raise_error "Bibliography has no citations"
         end
       end
-
-      context "@bibliography.citations has matching entries in @library" do
-        before do
-          @citation = double(:citation)
-          @citation.stub(:cite_key){"cite:key"}
-          bibliography = double( "bibliography" )
-          bibliography.stub(:citations){[ @citation ]}
-          @entry = double("entry")
-          library = double( "library" )
-          library.stub(:get_entry).with("cite:key") { @entry }
-          library.stub("[]") { @entry }
-          citer.library = library
-          citer.bibliography = bibliography
-        end
-
-        it "should set the values of the citations 'entry' to corresponding entries" do
-          pending("fix test setup here, functionality is not broken")
-          @citation.should_receive(:entry=).with(@entry)
-          citer.get_entries_from_library
-        end
-      end
     end
-
 
     describe "#group_matches!" do
       context "with a line has one match that follows another" do

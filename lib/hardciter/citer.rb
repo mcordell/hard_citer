@@ -26,8 +26,7 @@ module HardCiter
       add_and_group_intext_matches(document, intext_matches)
       get_entries_from_library
       @output.prepare_bibliography(@bibliography)
-      output_text = @output.process_and_output_text(document,intext_matches)
-      puts output_text
+      @output.process_and_output_text(document,intext_matches)
     end
 
     def get_entries_from_library
@@ -55,14 +54,6 @@ module HardCiter
         raise "Library missing cannot proceed with citation"
       elsif @csl.nil?
         raise "No citation format found, cannot proceed with citation"
-      end
-    end
-
-    def find_all_citations(text)
-      text.each_with_index() do |line, index|
-        regex_matches = @bibliography.parse_line(line,index)
-        matches = regex_matches_to_citations(regex_matches) unless regex_matches.empty?
-        @bibliography.mark_match_positions(matches,line,index) unless matches.nil?
       end
     end
 

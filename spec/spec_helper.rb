@@ -1,8 +1,8 @@
 require 'simplecov'
 SimpleCov.start
 
-#require 'coveralls'
-#Coveralls.wear!
+require 'coveralls'
+Coveralls.wear!
 
 $LOAD_PATH << File.expand_path("../../../lib", __FILE__)
 require 'hard_citer'
